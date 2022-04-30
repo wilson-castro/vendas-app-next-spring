@@ -1,10 +1,12 @@
 import { Produto } from "app/models/produtos";
 import { useProdutoService } from "app/services";
-import { converterEmBigDecimal } from "app/util/money";
+import { converterEmBigDecimal, formatReal } from "app/util/money";
 import { Layout } from "components";
 import { Input } from "components";
 import { Alert } from "components/common/message";
-import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 
 const msgCampoObrigatorio = "Campo obrigatório";
@@ -18,17 +20,43 @@ const validationSchema = yup.object().shape({
     .moreThan(0, "Valor maior que 0,00(zero)"),
 })
 
+interface FormErros {
+  sku: string;
+  nome: string;
+  preco: string;
+  descricao: string;
+}
+
 export const CadastroProdutos : React.FC = () => {
 
+  const router = useRouter();
+  const { id: queryId } : any =  router.query;
   const service = useProdutoService();
+
   const [sku, setSku] = useState('');
   const [nome, setNome] = useState('');
   const [preco, setPreco] = useState('');
- const [messages, setMessages]= useState<Array<Alert>>([]);
+  const [messages, setMessages]= useState<Array<Alert>>([]);
   const [descricao, setDescricao] = useState('');
   const [id, setId] = useState<string | undefined>('');
   const [cadastro, setCadastro] = useState<string | undefined>('');
- 
+  const [ errors, setErrors ] = useState<Partial<FormErros>>({});
+
+  useEffect( ()=> {
+    if(queryId) {
+      service.carregarProduto(Number(queryId))
+      .then( (produtoEncontrado: Produto) => {
+          setId(produtoEncontrado.id);
+          setSku(produtoEncontrado.sku ?? '');
+          setNome(produtoEncontrado.nome ?? '');
+          setPreco( formatReal(`${produtoEncontrado.preco}`) ?? '');
+          setDescricao(produtoEncontrado.descricao ?? '');      
+          setCadastro(produtoEncontrado.cadastro ?? '' );      
+      })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ queryId ])
+
   const submit = () => {
     const produto: Produto = {
       id, sku, preco: converterEmBigDecimal(preco), nome, descricao
@@ -36,18 +64,15 @@ export const CadastroProdutos : React.FC = () => {
 
     validationSchema.validate(produto)
       .then( obj => {
+        setErrors({});
+
         if(id){      
           service.atualizar(produto)
             .then( () =>{             
                 setMessages([{
                   tipo: "success", texto: "Produto atualizado com sucesso!",
                 }])
-              }
-            ).catch( (response ) => {
-              setMessages([{
-                tipo: "danger", texto: "Houve um erro no servidor!",
-              }])
-            });
+              });
         }
         else{
           service.salvar(produto)
@@ -57,19 +82,17 @@ export const CadastroProdutos : React.FC = () => {
               setMessages([{
                 tipo: "success", texto: "Produto salvo com sucesso!"
               }])
-            }).catch( (response ) => {
-              setMessages([{
-                tipo: "danger", texto: "Houve um erro no servidor!",
-              }])
             });
         }
       })
       .catch( (err) => {
         const field =  err.path;
         const message = err.message;
-        setMessages([{
-          tipo: "warning",field, texto: message,
-        }])
+
+        setErrors({
+          [field]: message
+        });
+
       });
 
   };
@@ -103,6 +126,7 @@ export const CadastroProdutos : React.FC = () => {
           id="inputSku"
           label="SKU: *"
           onChange={setSku}
+          error={ errors.sku }
           columnClasses="is-half"
           placeholder="Digite o SKU do produto"
         />
@@ -114,6 +138,7 @@ export const CadastroProdutos : React.FC = () => {
           id="inputPreco"
           label="Preço: *"
           onChange={setPreco}
+          error={ errors.preco }
           columnClasses="is-half"
           placeholder="Digite o Preço do produto"
         />
@@ -125,6 +150,7 @@ export const CadastroProdutos : React.FC = () => {
             id="inputNome"
             label="Nome: *"
             onChange={setNome}
+            error={ errors.nome }
             columnClasses="is-full"
             placeholder="Digite o Nome do produto"
           />
@@ -137,6 +163,10 @@ export const CadastroProdutos : React.FC = () => {
             value={descricao} placeholder="Digite a Descrição detalhada do produto"
             onChange={ event => setDescricao(event.target.value)}
           />
+          {
+            errors.descricao && 
+            <p className="help is-danger">{ errors.descricao } </p>
+          }
         </div>
       </div>
 
@@ -147,9 +177,11 @@ export const CadastroProdutos : React.FC = () => {
             </button>
         </div>
         <div className="control">
+          <Link passHref href="/consultas/produtos">
             <button className="button">
-              Voltar
+                Voltar
             </button>
+          </Link>
         </div>
         </div>
     </Layout>
