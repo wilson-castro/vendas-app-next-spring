@@ -23,6 +23,12 @@ public class ProdutoController {
         return repository.findAll().stream()
                 .map( ProdutoFormRequest::fromModel )
                 .collect(Collectors.toList());
+//        OUTRO JEITO
+//        return repository.findAll().stream().map( new Function<Produto, ProdutoFormRequest>() {
+//            @Override ProdutoFormRequest apply(Produto t){
+//                return  ProdutoFormRequest.fromModel(t);
+//            }
+//        }).collect(Collectors.toList());
     }
 
     @PostMapping
