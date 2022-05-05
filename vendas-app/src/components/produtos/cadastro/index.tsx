@@ -3,6 +3,7 @@ import { useProdutoService } from "app/services";
 import { converterEmBigDecimal, formatReal } from "app/util/money";
 import { Layout } from "components";
 import { Input } from "components";
+import { InputMoney } from "components/common";
 import { Alert } from "components/common/message";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -125,19 +126,18 @@ export const CadastroProdutos : React.FC = () => {
           value={sku}
           id="inputSku"
           label="SKU: *"
-          onChange={setSku}
+          onChange={e  => setSku(e.target.value)}
           error={ errors.sku }
           columnClasses="is-half"
           placeholder="Digite o SKU do produto"
         />
 
-        <Input
-          currency
+        <InputMoney
           value={preco}
           maxLength={16}
           id="inputPreco"
           label="Preço: *"
-          onChange={setPreco}
+          onChange={e => setPreco(e.target.value)}
           error={ errors.preco }
           columnClasses="is-half"
           placeholder="Digite o Preço do produto"
@@ -149,7 +149,7 @@ export const CadastroProdutos : React.FC = () => {
             value={nome}
             id="inputNome"
             label="Nome: *"
-            onChange={setNome}
+            onChange={e => setNome(e.target.value)}
             error={ errors.nome }
             columnClasses="is-full"
             placeholder="Digite o Nome do produto"
