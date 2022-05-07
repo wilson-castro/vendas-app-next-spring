@@ -1,5 +1,6 @@
 import { ChangeEvent, InputHTMLAttributes } from 'react'
-import { formatReal } from 'app/util/money'
+import { formatReal } from 'app/util/money';
+import { maskCPF, maskDate, maskPhone } from 'app/util/mask';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     id: string;
@@ -53,5 +54,23 @@ export const Input: React.FC<InputProps> = ({
 export const InputMoney: React.FC<InputProps> = (props: InputProps) => {
     return (
         <Input {...props} formatter={formatReal} />
+    )
+}
+
+export const InputCPF: React.FC<InputProps> = (props:InputProps) => {
+    return (
+        <Input {...props} formatter={maskCPF} />
+    )
+}
+
+export const InputTelefone: React.FC<InputProps> = (props:InputProps) => {
+    return (
+        <Input {...props} formatter={maskPhone}  />
+    )
+}
+
+export const InputDate: React.FC<InputProps> = (props:InputProps) => {
+    return (
+        <Input {...props} maxLength={10} formatter={maskDate}   />
     )
 }

@@ -53,7 +53,7 @@ public class ClienteController {
 //                .orElse( ResponseEntity.notFound().build() ) OUTRO JEITO, esse daki não é mt bom pq exceuta num caso de ter mas demorar a vir o dad
     }
 
-    @GetMapping("{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Object> delete(@PathVariable Long id){
         return repository.findById(id)
                 .map( cliente -> {

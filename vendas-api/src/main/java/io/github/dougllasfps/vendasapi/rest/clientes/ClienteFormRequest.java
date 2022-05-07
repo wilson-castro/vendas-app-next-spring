@@ -1,5 +1,6 @@
 package io.github.dougllasfps.vendasapi.rest.clientes;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.dougllasfps.vendasapi.model.Cliente;
 
 import java.time.LocalDate;
@@ -12,7 +13,11 @@ public class ClienteFormRequest {
     private String endereco;
     private String email;
     private String telefone;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCadastro;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
 
     public ClienteFormRequest() {

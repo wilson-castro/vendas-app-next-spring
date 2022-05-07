@@ -58,6 +58,11 @@ public class Cliente {
         this.dataCadastro = dataCadastro;
     }
 
+    @PrePersist
+    public void prePersist(){
+        setDataCadastro(LocalDate.now());
+    }
+
     public Long getId() {
         return id;
     }
