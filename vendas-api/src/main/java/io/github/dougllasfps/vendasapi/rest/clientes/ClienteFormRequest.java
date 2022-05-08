@@ -15,7 +15,7 @@ public class ClienteFormRequest {
     private String telefone;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate dataCadastro;
+    private LocalDate cadastro;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
@@ -27,7 +27,7 @@ public class ClienteFormRequest {
     public ClienteFormRequest(
             Long id, String nome, String cpf,
             String endereco, String email, String telefone,
-            LocalDate dataCadastro, LocalDate dataNascimento) {
+            LocalDate cadastro, LocalDate dataNascimento) {
         super();
         this.id = id;
         this.nome = nome;
@@ -35,20 +35,20 @@ public class ClienteFormRequest {
         this.endereco = endereco;
         this.email = email;
         this.telefone = telefone;
-        this.dataCadastro = dataCadastro;
+        this.cadastro = cadastro;
         this.dataNascimento = dataNascimento;
     }
 
     public ClienteFormRequest(
         String nome, String cpf, String endereco,
-        String email, String telefone, LocalDate dataCadastro,
+        String email, String telefone, LocalDate cadastro,
         LocalDate dataNascimento) {
         this.nome = nome;
         this.cpf = cpf;
         this.endereco = endereco;
         this.email = email;
         this.telefone = telefone;
-        this.dataCadastro = dataCadastro;
+        this.cadastro = cadastro;
         this.dataNascimento = dataNascimento;
     }
 
@@ -100,12 +100,12 @@ public class ClienteFormRequest {
         this.telefone = telefone;
     }
 
-    public LocalDate getDataCadastro() {
-        return dataCadastro;
+    public LocalDate getCadastro() {
+        return cadastro;
     }
 
-    public void setDataCadastro(LocalDate dataCadastro) {
-        this.dataCadastro = dataCadastro;
+    public void setCadastro(LocalDate cadastro) {
+        this.cadastro = cadastro;
     }
 
     public LocalDate getDataNascimento() {
